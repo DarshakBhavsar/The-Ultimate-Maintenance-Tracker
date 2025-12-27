@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="team_form" model="ir.ui.view">
+        <field name="name">Team Form</field>
+        <field name="model">maintenance.team</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Team Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Team Members">
+                            <field name="member_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Assigned Equipment">
+                            <field name="equipment_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="serial_number"/>
+                                    <field name="category"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Maintenance Requests">
+                            <field name="request_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="subject"/>
+                                    <field name="stage"/>
+                                    <field name="assigned_to"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="team_list" model="ir.ui.view">
+        <field name="name">Team List</field>
+        <field name="model">maintenance.team</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="member_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="team_search" model="ir.ui.view">
+        <field name="name">Team Search</field>
+        <field name="model">maintenance.team</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Team Name"/>
+                <field name="member_ids"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="team_action" model="ir.actions.act_window">
+        <field name="name">Maintenance Teams</field>
+        <field name="res_model">maintenance.team</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="team_search"/>
+    </record>
+
+    <menuitem id="team_menu"
+              name="Teams"
+              parent="maintenance_menu"
+              action="team_action"
+              sequence="20"/>
+</odoo>

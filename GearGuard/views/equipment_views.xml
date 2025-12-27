@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="equipment_form" model="ir.ui.view">
+        <field name="name">Equipment Form</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_maintenance" type="object"
+                            string="Maintenance Requests"
+                            class="btn-primary" icon="fa-wrench"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Equipment Name"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Basic Information">
+                            <field name="serial_number"/>
+                            <field name="category"/>
+                            <field name="location"/>
+                        </group>
+                        <group string="Assignment">
+                            <field name="department_id"/>
+                            <field name="employee_id"/>
+                            <field name="team_id" required="1"/>
+                            <field name="default_technician_id"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Warranty">
+                            <field name="purchase_date"/>
+                            <field name="warranty_end"/>
+                        </group>
+                        <group string="Status">
+                            <field name="active"/>
+                            <field name="maintenance_count" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Maintenance History">
+                            <field name="maintenance_request_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="subject"/>
+                                    <field name="request_type"/>
+                                    <field name="stage"/>
+                                    <field name="assigned_to"/>
+                                    <field name="created_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="equipment_list" model="ir.ui.view">
+        <field name="name">Equipment List</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="serial_number"/>
+                <field name="category"/>
+                <field name="team_id"/>
+                <field name="maintenance_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="equipment_search" model="ir.ui.view">
+        <field name="name">Equipment Search</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Equipment Name"/>
+                <field name="serial_number"/>
+                <field name="category"/>
+                <field name="team_id"/>
+                <separator/>
+                <filter name="active_equipment" string="Active"
+                        domain="[('active', '=', True)]"/>
+                <filter name="inactive_equipment" string="Inactive"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_category" string="Category"
+                            context="{'group_by': 'category'}"/>
+                    <filter name="group_by_team" string="Team"
+                            context="{'group_by': 'team_id'}"/>
+                    <filter name="group_by_department" string="Department"
+                            context="{'group_by': 'department_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="equipment_action" model="ir.actions.act_window">
+        <field name="name">Equipment</field>
+        <field name="res_model">maintenance.equipment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="equipment_search"/>
+    </record>
+
+    <menuitem id="maintenance_menu"
+              web_icon="GearGuard,static/description/maintainence.png"
+              name="Maintenance" sequence="50"/>
+
+    <menuitem id="equipment_menu"
+              name="Equipment"
+              parent="maintenance_menu"
+              action="equipment_action"
+              sequence="10"/>
+</odoo>
